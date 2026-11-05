@@ -218,11 +218,11 @@ button{font:inherit;color:inherit;cursor:pointer}
 @media (prefers-reduced-motion:reduce){.app{transition:none}}
 
 /* 清單：已讀像點了燈，未讀像虛線街屋 */
-.item{border-left:3px solid transparent;border-radius:0 4px 4px 0;margin:2px 0}
-.item.done{background:color-mix(in srgb,#FFC46B 18%,transparent);border-left-color:#E9A23B}
-.item.done:hover{background:color-mix(in srgb,#FFC46B 28%,transparent)}
-.item.done .n{color:#B8741A}
-.item.nextup{border-left-color:var(--ink)}
+.item{border-left:4px solid var(--cat,transparent);border-radius:0 4px 4px 0;margin:4px 0}
+.item.done{background:color-mix(in srgb,var(--cat) var(--tint),transparent)}
+.item.done:hover{background:color-mix(in srgb,var(--cat) calc(var(--tint) + 12%),transparent)}
+.item.done .n{color:var(--catd)}
+.item.nextup{box-shadow:inset 0 0 0 1px var(--line)}
 .item.nextup .n{color:var(--ink)}
 .item .n{color:var(--ink-3)}
 .st{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:0 9px;line-height:1.8;font-weight:500;font-size:12px}
@@ -230,9 +230,10 @@ button{font:inherit;color:inherit;cursor:pointer}
 .st.lit{background:#FFC46B;color:#3B2A06}
 .st.lit i{background:#FFF3D6;box-shadow:0 0 0 1px #B8741A}
 .st.todo{border:1px dashed var(--ink-3);color:var(--ink-3);font-weight:400}
-.item.done .tag:not(.hit){border-color:color-mix(in srgb,#B8741A 45%,transparent)}
+.item.done .tag:not(.hit){border-color:color-mix(in srgb,var(--catd) 40%,transparent)}
+.cat{font-family:var(--latin);font-weight:600;font-size:11px;letter-spacing:.03em;color:var(--catd);border:1px solid color-mix(in srgb,var(--catd) 55%,transparent);border-radius:3px;padding:0 6px;line-height:1.8}
 .st.next{background:var(--ink);color:var(--paper)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .item.done .n{color:#FFC46B}}
+
 </style>
 </head>
 <body>
@@ -416,10 +417,11 @@ function itemHTML(x,showWhy){
   const rs=showWhy?reasons(x):[];
   const ind=x.indLabel?`案例產業：${x.indLabel}`:"跨產業通用";
   const hitInd=S.answers&&S.answers.ind!=="other"&&x.inds.includes(S.answers.ind);
-  return `<button class="item ${fl>=0?"done":x.id===nextId()?"nextup":""}" data-id="${x.id}">
+  const c=CH[x.ch];
+  return `<button class="item ${fl>=0?"done":x.id===nextId()?"nextup":""}" data-id="${x.id}" style="--cat:var(${c.v});--catd:var(${c.d});--tint:${x.ch==="intro"?"9%":"34%"}">
     <span class="n">${String(x.id).padStart(2,"0")}</span>
     <span><span class="t">${x.title}</span>
-    <span class="s">${fl>=0?`<span class="st lit"><i></i>已點亮</span>`:x.id===nextId()?`<span class="st next">下一篇</span>`:`<span class="st todo">未讀</span>`}<span class="lv" title="${LV[x.level]}">${"■".repeat(x.level)}${"□".repeat(3-x.level)} ${LV[x.level]}</span>
+    <span class="s">${fl>=0?`<span class="st lit"><i></i>已點亮</span>`:x.id===nextId()?`<span class="st next">下一篇</span>`:`<span class="st todo">未讀</span>`}<span class="cat">${c.name}</span><span class="lv" title="${LV[x.level]}">${"■".repeat(x.level)}${"□".repeat(3-x.level)} ${LV[x.level]}</span>
     <span class="tag ${hitInd?"hit":""}">${ind}</span>${rs.filter(r=>r!=="有你產業的案例").map(r=>`<span class="tag">${r}</span>`).join("")}</span></span></button>`;
 }
 function renderList(){
