@@ -189,6 +189,33 @@ button{font:inherit;color:inherit;cursor:pointer}
 .bmark b{font-family:'Cactus Classical Serif','Noto Serif TC',serif;font-weight:400;font-size:23px;letter-spacing:.04em}
 .bmark .mini{height:26px;width:auto;fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linejoin:round}
 .bmark .mini .b{fill:#FFC46B;fill-opacity:calc(.25 + var(--litk,0) * .7)}
+
+/* ===== 版面 A：閱讀優先，老街當獎勵 ===== */
+.app{grid-template-columns:1fr;grid-template-rows:auto clamp(200px,32vh,340px) minmax(0,1fr);transition:grid-template-rows .7s cubic-bezier(.3,.7,.2,1)}
+.app.reveal{grid-template-rows:auto 72vh minmax(0,1fr)}
+.stage{grid-row:2;grid-column:1;border-bottom:1px solid var(--line)}
+.stage .cap{left:24px;top:12px;bottom:auto;max-width:none;font-size:12px}
+.side{grid-row:3;grid-column:1;display:grid;grid-template-columns:380px minmax(0,780px);grid-template-rows:auto minmax(0,1fr);justify-content:center;gap:0 48px;border-right:0}
+.side .calwrap{grid-row:1/3;padding-top:26px}
+.side .tabs{grid-column:2}.side .list{grid-column:2}
+.expand{position:absolute;right:20px;bottom:12px;z-index:2;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:5px 14px;font-size:13px;color:var(--ink-2)}
+.expand:hover{border-color:var(--ink);color:var(--ink)}
+.stage.night .expand{background:#1e2436;color:#c9d0e0;border-color:#3a4258}
+.reader{background:var(--paper);justify-content:center}
+.paper{width:min(860px,100%);box-shadow:0 0 0 1px var(--line);animation:fadein .3s ease}
+@keyframes fadein{from{opacity:0}}
+@media (max-width:860px){
+  .app{grid-template-rows:auto 30vh auto}
+  .app.reveal{grid-template-rows:auto 62vh auto}
+  .side{display:flex;flex-direction:column}
+  .stage .cap{display:none}
+  .paper{box-shadow:none}
+  .bar{gap:8px;padding:10px 12px}.bar .sp{flex:1}
+  .bmark{gap:5px}.bmark b{font-size:18px;white-space:nowrap}.bmark .mini{height:20px}
+  .floors{white-space:nowrap;gap:4px}.floors b{font-size:22px}.floors .of{display:none}
+  .bar .ghost{padding:5px 9px;font-size:12px;white-space:nowrap}
+}
+@media (prefers-reduced-motion:reduce){.app{transition:none}}
 </style>
 </head>
 <body>
@@ -197,8 +224,9 @@ button{font:inherit;color:inherit;cursor:pointer}
     <span class="bmark"><svg class="mini" viewBox="0 0 24 34" aria-hidden="true"><path d="M12 1V7M4 13L12 7L20 13Z"/><path class="b" d="M5 13H19L16.5 27H7.5Z"/><path d="M10 27L12 31L14 27"/></svg><b>決策智慧</b></span>
     <span class="yr">2026</span>
     <span class="sp"></span>
-    <span class="floors" aria-live="polite"><b id="fl">0</b>/ 22 間亮燈</span>
+    <span class="floors" aria-live="polite"><b id="fl">0</b>/ 22<span class="of"> 間亮燈</span></span>
     <button class="ghost" id="reQuiz">重新選路線</button>
+    <button class="ghost" id="reset">清空進度</button>
   </header>
   <aside class="side">
     <div class="calwrap">
@@ -222,7 +250,8 @@ button{font:inherit;color:inherit;cursor:pointer}
   <p>22 篇讀完，22 間街屋全部點亮。點任何一間街屋，都能回去重讀那篇文章。</p>
   <div class="cta"><button class="btn" id="again">再放一次天燈</button><button class="btn alt" id="closeF">回到老街</button></div>
 </div></div>
-    <p class="cap" id="cap">老街從左到右依序是序章、People、Model、AI 四個街區。虛線是還沒蓋的街屋，左右拖曳可以轉動，點一間街屋可以回到那篇文章。</p>
+    <p class="cap" id="cap">由左到右：序章、People、Model、AI 四個街區。拖曳可轉動，點亮的街屋點一下就能回到那篇。</p>
+    <button class="expand" id="expand" aria-pressed="false">展開老街</button>
   </main>
 </div>
 
@@ -431,11 +460,16 @@ $("#reader").addEventListener("click",e=>{if(e.target.id==="reader")closeReader(
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("#reader").classList.contains("on"))closeReader()});
 
 /* ---------- tear ---------- */
+let revealT;
+function reveal(on,ms){clearTimeout(revealT);$("#app").classList.toggle("reveal",on);$("#expand").textContent=on?"收起老街":"展開老街";$("#expand").setAttribute("aria-pressed",on);if(on&&ms)revealT=setTimeout(()=>reveal(false),ms);}
+$("#expand").onclick=()=>reveal(!$("#app").classList.contains("reveal"));
+$("#reset").onclick=()=>{if(confirm("確定要清空進度嗎？已點亮的街屋、撕下的日曆和你的路線都會重設。")){try{localStorage.removeItem(KEY)}catch(e){}location.reload();}};
 function tear(id){
   if(S.built.includes(id)) return;
   const x=byId(id); const sh=$("#topSheet");
   const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
   if(sh){sh.innerHTML=sheetHTML(x);sh.classList.add("tearing");}
+  reveal(true,S.built.length+1===22?0:4200);
   setTimeout(()=>{
     S.built.push(id); save(); renderAll(); T.drop(S.built.length-1);
     const n=S.built.length;
@@ -448,7 +482,7 @@ function tear(id){
 let tt;function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("on"),3600)}
 function finale(){$("#finale").classList.add("on");T.fireworks();}
 $("#again").onclick=()=>T.fireworks();
-$("#closeF").onclick=()=>$("#finale").classList.remove("on");
+$("#closeF").onclick=()=>{$("#finale").classList.remove("on");reveal(false);};
 
 /* ---------- 3D 騎樓老街 ---------- */
 const T=(()=>{
@@ -552,7 +586,7 @@ const T=(()=>{
     road.material.color.set(on?0x262b3b:(dark()?0x2a2a27:0xE2DFD8));
   }
   // interaction
-  let aim=0, rotY=0, vel=0, drag=false, lx=0, dist=15, auto=true, moved=0;
+  let band=false; let aim=0, rotY=0, vel=0, drag=false, lx=0, dist=15, auto=true, moved=0;
   cv.addEventListener("pointerdown",e=>{drag=true;lx=e.clientX;moved=0;cv.setPointerCapture(e.pointerId);auto=false});
   cv.addEventListener("pointermove",e=>{ if(drag){const dx=e.clientX-lx;lx=e.clientX;rotY-=dx*.004;vel=-dx*.004;moved+=Math.abs(dx);} else hover(e); });
   cv.addEventListener("pointerup",e=>{drag=false; if(moved<5) pick(e); else aim=rotY; setTimeout(()=>auto=true,2500)});
@@ -574,13 +608,13 @@ const T=(()=>{
   }
   function lanternsUp(){ if(matchMedia("(prefers-reduced-motion:reduce)").matches){for(let i=0;i<12;i++)launch();return;} let k=0;const iv=setInterval(()=>{launch();if(++k>=46)clearInterval(iv)},170); }
   function fireworks(){setNight(true);lanternsUp();}
-  function resize(){const w=stage.clientWidth,h=stage.clientHeight;R.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix(); dist=w/h<1.1?Math.max(9.5,9.5*1.2/(w/h)):9.5;}
+  function resize(){const w=stage.clientWidth,h=stage.clientHeight;R.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix(); const a=w/h; band=a>3; dist=a<1.1?Math.max(9.5,9.5*1.2/a):band?Math.min(14.5,10.3+(a-3)*2):9.5;}
   new ResizeObserver(resize).observe(stage); resize();
   function loop(t){
     requestAnimationFrame(loop);
     if(auto&&!drag) rotY+=(aim+Math.sin(t*.00018)*.12-rotY)*.02; else if(!drag){rotY+=vel;vel*=.94;} rotY=Math.max(-TH,Math.min(TH,rotY));
     pivot.rotation.y=rotY;
-    cam.position.set(0,dist*.42,dist); cam.lookAt(0,1.35,-2.6);
+    if(band){cam.position.set(0,dist*.36,dist*.92);cam.lookAt(0,.9,.4);}else{cam.position.set(0,dist*.42,dist);cam.lookAt(0,1.35,-2.6);}
     for(let i=anims.length-1;i>=0;i--){const a=anims[i];const k=Math.min(1,(t-a.t0)/750);const e=1+2.2*Math.pow(k-1,3)+1.2*Math.pow(k-1,2);a.g.scale.y=Math.max(.01,k<1?e:1);if(k>=1)anims.splice(i,1);}
     wins.forEach(w=>{if(w.target&&houses[w.id]){const goal=night?1.25:.55;const m=w.m.material;m.emissiveIntensity+=(goal-m.emissiveIntensity)*.04;}});
     for(let i=sky.length-1;i>=0;i--){const s=sky[i];s.life++;s.m.position.y+=s.vy;s.m.position.x+=Math.sin(t*.001+s.ph)*.003;
