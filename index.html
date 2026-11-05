@@ -360,14 +360,30 @@ function renderQ(){
     b.onclick=()=>{qa[q.k]=k;renderQ();};box.appendChild(b);});
   $("#qback").style.visibility=qi?"visible":"hidden";
   $("#qnext").textContent=qi===2?"排出我的路線":"下一題";
-  $("#qnext").disabled=!qa[q.k];
+  $("#qnext").disabled=!qa[q.k]; $("#qnext").style.visibility="visible";
 }
 $("#qback").onclick=()=>{qi--;renderQ()};
-$("#qnext").onclick=()=>{
-  if(qi<2){qi++;renderQ();return;}
+/* 選完路線：已有進度時，讓讀者自己決定保留或重來 */
+function finishQuiz(fresh){
+  const kept=fresh?0:S.built.length;
+  if(fresh){S.built=[];$("#finale").classList.remove("on");reveal(false);}
   S.answers={...qa}; S.route=makeRoute(S.answers); save();
   $("#quizM").classList.remove("on"); setTab("route"); renderAll(); enterApp();
-  toast(`你的路線有 ${S.route.length} 篇，由淺入深排好了。從日曆最上面那張開始。`);
+  toast(kept?`新路線有 ${S.route.length} 篇，已點亮的 ${kept} 間街屋都保留著。`:fresh?`老街重新開始了。新路線有 ${S.route.length} 篇，從日曆最上面那張開始。`:`你的路線有 ${S.route.length} 篇，由淺入深排好了。從日曆最上面那張開始。`);
+}
+function askKeep(){
+  qi=3; const n=S.built.length;
+  $("#qstep").textContent="最後一步"; $("#qh").textContent=`你已經點亮 ${n} 間街屋，這條新路線要怎麼走？`;
+  $("#qnote").textContent="保留進度的話，新路線裡讀過的文章會直接標成已點亮；重新開始的話，老街會回到空地。";
+  const box=$("#qopts"); box.innerHTML="";
+  [[`保留這 ${n} 間，繼續點亮`,false],["重新開始，從第一張日曆擕起",true]].forEach(([t,f])=>{const b=document.createElement("button");b.className="opt";b.textContent=t;b.onclick=()=>finishQuiz(f);box.appendChild(b);});
+  $("#qback").style.visibility="visible"; $("#qnext").style.visibility="hidden";
+  setTimeout(()=>$("#qopts button")?.focus(),50);
+}
+$("#qnext").onclick=()=>{
+  if(qi<2){qi++;renderQ();return;}
+  if(S.built.length){askKeep();return;}
+  finishQuiz(false);
 };
 $("#quizM").addEventListener("keydown",e=>{if(e.key==="Escape"&&S.answers){$("#quizM").classList.remove("on")}});
 
