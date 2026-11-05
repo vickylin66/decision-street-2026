@@ -6,7 +6,7 @@
 <title>決策智慧 2026｜讀一篇，點亮一間街屋</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;500;600&family=Noto+Sans+TC:wght@300;400;500;700;900&family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;500;600&family=Noto+Sans+TC:wght@300;400;500;700;900&family=Pixelify+Sans:wght@400;600&family=Cactus+Classical+Serif&display=swap" rel="stylesheet">
 <style>
 :root{
   --paper:#EFEEEA; --paper-2:#E5E3DD; --sheet:#FAF9F6; --ink:#1B1B1B; --ink-2:#55534F; --ink-3:#8A8781; --line:#CFCCC4;
@@ -175,7 +175,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 
 /* 標題：騎樓招牌字 + 台灣老街路燈（原創線稿，取代原刊物漸層字） */
 .mark{position:relative;margin:6px 0 22px;font-size:clamp(48px,7vw,96px);width:5.4em;height:2.45em;font-weight:900}
-.mark .t{position:absolute;left:0;top:1.14em;line-height:1;letter-spacing:.04em;color:var(--ink);font-weight:900;z-index:1}
+.mark .t{position:absolute;left:0;top:1.14em;line-height:1;letter-spacing:.04em;color:var(--ink);font-family:'Cactus Classical Serif','Noto Serif TC',serif;font-weight:400;z-index:1}
 .mark .lamp{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 .lamp .ln{fill:none;stroke:var(--ink);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:var(--l);stroke-dashoffset:var(--l);animation:draw 1s ease forwards;animation-delay:var(--d)}
 .lamp .gd{stroke:var(--ink-3);stroke-width:1.4;fill:none}
@@ -186,7 +186,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .lamp .glow{mix-blend-mode:screen}}
 @media (prefers-reduced-motion:reduce){.lamp .ln,.lamp .bulb,.lamp .glow{animation:none;stroke-dashoffset:0}.lamp .bulb{fill-opacity:.95}.lamp .glow{opacity:1}}
 .bmark{display:flex;align-items:center;gap:8px;line-height:1}
-.bmark b{font-weight:900;font-size:21px;letter-spacing:.04em}
+.bmark b{font-family:'Cactus Classical Serif','Noto Serif TC',serif;font-weight:400;font-size:23px;letter-spacing:.04em}
 .bmark .mini{height:26px;width:auto;fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linejoin:round}
 .bmark .mini .b{fill:#FFC46B;fill-opacity:calc(.25 + var(--litk,0) * .7)}
 </style>
