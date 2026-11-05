@@ -216,6 +216,23 @@ button{font:inherit;color:inherit;cursor:pointer}
   .bar .ghost{padding:5px 9px;font-size:12px;white-space:nowrap}
 }
 @media (prefers-reduced-motion:reduce){.app{transition:none}}
+
+/* 清單：已讀像點了燈，未讀像虛線街屋 */
+.item{border-left:3px solid transparent;border-radius:0 4px 4px 0;margin:2px 0}
+.item.done{background:color-mix(in srgb,#FFC46B 18%,transparent);border-left-color:#E9A23B}
+.item.done:hover{background:color-mix(in srgb,#FFC46B 28%,transparent)}
+.item.done .n{color:#B8741A}
+.item.nextup{border-left-color:var(--ink)}
+.item.nextup .n{color:var(--ink)}
+.item .n{color:var(--ink-3)}
+.st{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:0 9px;line-height:1.8;font-weight:500;font-size:12px}
+.st i{width:8px;height:10px;display:inline-block;border-radius:1px}
+.st.lit{background:#FFC46B;color:#3B2A06}
+.st.lit i{background:#FFF3D6;box-shadow:0 0 0 1px #B8741A}
+.st.todo{border:1px dashed var(--ink-3);color:var(--ink-3);font-weight:400}
+.item.done .tag:not(.hit){border-color:color-mix(in srgb,#B8741A 45%,transparent)}
+.st.next{background:var(--ink);color:var(--paper)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .item.done .n{color:#FFC46B}}
 </style>
 </head>
 <body>
@@ -330,7 +347,9 @@ function makeRoute(a){
     if(a.ind!=="other" && x.inds.includes(a.ind)) s+=2.4;
     return {x,s};
   }).sort((p,q)=>q.s-p.s||p.x.level-q.x.level);
-  const pick=scored.slice(0,5).map(o=>o.x);
+  // 已讀過的文章往後排，讓新路線優先帶進還沒讀的
+  const isRead=o=>S.built.includes(o.x.id);
+  const pick=[...scored.filter(o=>!isRead(o)),...scored.filter(isRead)].slice(0,5).map(o=>o.x);
   pick.sort((p,q)=>p.level-q.level||p.page-q.page);
   return [2,...pick.map(x=>x.id)];
 }
@@ -397,17 +416,17 @@ function itemHTML(x,showWhy){
   const rs=showWhy?reasons(x):[];
   const ind=x.indLabel?`案例產業：${x.indLabel}`:"跨產業通用";
   const hitInd=S.answers&&S.answers.ind!=="other"&&x.inds.includes(S.answers.ind);
-  return `<button class="item ${fl>=0?"done":""}" data-id="${x.id}">
+  return `<button class="item ${fl>=0?"done":x.id===nextId()?"nextup":""}" data-id="${x.id}">
     <span class="n">${String(x.id).padStart(2,"0")}</span>
     <span><span class="t">${x.title}</span>
-    <span class="s">${fl>=0?`<span class="done-mark">已點亮</span>`:""}<span class="lv" title="${LV[x.level]}">${"■".repeat(x.level)}${"□".repeat(3-x.level)} ${LV[x.level]}</span>
+    <span class="s">${fl>=0?`<span class="st lit"><i></i>已點亮</span>`:x.id===nextId()?`<span class="st next">下一篇</span>`:`<span class="st todo">未讀</span>`}<span class="lv" title="${LV[x.level]}">${"■".repeat(x.level)}${"□".repeat(3-x.level)} ${LV[x.level]}</span>
     <span class="tag ${hitInd?"hit":""}">${ind}</span>${rs.filter(r=>r!=="有你產業的案例").map(r=>`<span class="tag">${r}</span>`).join("")}</span></span></button>`;
 }
 function renderList(){
   const L=$("#list");
   if(tab==="route"&&S.route.length){
     const a=S.answers;
-    L.innerHTML=`<p class="why">你的工作是${ROLES[a.role]}，${a.ind==="other"?"":`在${INDS[a.ind]}產業，`}最想${THEMES[a.theme]}。這條路線從入門讀到深入，一共 ${S.route.length} 篇。</p>`+S.route.map(id=>itemHTML(byId(id),true)).join("");
+    L.innerHTML=`<p class="why">你的工作是${ROLES[a.role]}，${a.ind==="other"?"":`在${INDS[a.ind]}產業，`}最想${THEMES[a.theme]}。這條路線從入門讀到深入，一共 ${S.route.length} 篇，已點亮 ${S.route.filter(id=>S.built.includes(id)).length} 篇。</p>`+S.route.map(id=>itemHTML(byId(id),true)).join("");
   }else{
     L.innerHTML=Object.keys(CH).map(k=>`<div class="chgroup"><i style="background:${CH[k].c}"></i>${CH[k].name}</div>`+ARTS.filter(x=>x.ch===k).map(x=>itemHTML(x,!!S.answers)).join("")).join("");
   }
