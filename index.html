@@ -321,7 +321,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .full{margin:10px 0 0;padding-top:26px;border-top:1px solid var(--line)}
 .fullbtn{display:flex;align-items:center;gap:8px;width:100%;justify-content:center;font:inherit;font-size:16px;font-weight:600;padding:14px 18px;border:1px solid var(--ink);border-radius:4px;background:var(--sheet);color:var(--ink)}
 .fullbtn span{font-weight:400;font-size:13px;color:var(--ink-2)}
-.fullbtn::after{content:"▾";margin-left:4px}.fullbtn[aria-expanded="true"]::after{content:"▴"}
+.fullbtn::after{content:"→";margin-left:4px}
+.fullnote{font-size:13px!important;color:var(--ink-3)!important;margin:8px 0 0!important;text-align:center}
 .fullbody{padding-top:20px}
 .fhead{font-size:13px;color:var(--ink-3);letter-spacing:.05em;margin:0 0 20px}
 .fullbody h3{font-size:20px;margin:40px 0 12px;line-height:1.5}
@@ -340,7 +341,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .contact{margin:40px 0 0;padding:20px;border:1px solid color-mix(in srgb,#C89B4A 55%,transparent);border-radius:8px;background:color-mix(in srgb,#FFC46B 10%,var(--sheet))}
 .contact h4{margin:0 0 4px!important;color:#8A5A1F!important;font-family:'Cactus Classical Serif','Noto Serif TC',serif;font-weight:400;font-size:20px!important}
 .contact p{font-size:14px!important;margin:0 0 6px!important;color:var(--ink-2)!important}
-.cthumbs{display:grid;grid-template-columns:1fr 1fr;gap:10px}.cthumbs .figthumb{margin:6px 0 0;flex-direction:column;align-items:flex-start}.cthumbs .figthumb img{width:100%}
+.cthumbs{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:400px}.cthumbs .figthumb{margin:6px 0 0;flex-direction:column;align-items:flex-start}.cthumbs .figthumb img{width:100%}
 .fcopy{font-size:12.5px!important;color:var(--ink-3)!important;margin:28px 0 14px!important}
 .fload{color:var(--ink-2)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .contact h4{color:#F2C77A!important}}
@@ -661,9 +662,14 @@ function openReader(id){
     ${cur.points.map((p,i)=>`<div class="pt"><span class="k">${i+1}</span><div><h4>${p.h}</h4><p>${p.b}</p></div></div>`).join("")}
     ${cur.outro.map(t=>`<p>${t}</p>`).join("")}
     <div class="tearbox" id="tearbox"></div>
-    <section class="full" id="full"><button class="fullbtn" id="fullbtn" aria-expanded="false">讀全文<span id="fullmin"></span></button><div class="fullbody" id="fullbody" hidden></div></section>`;
-  loadFull(cur.id).then(d=>{if(cur&&cur.id===d.id)$("#fullmin").textContent=`（約 ${d.mins} 分鐘・原刊 P.${d.start}–${d.end}）`;}).catch(()=>{});
-  $("#fullbtn").onclick=toggleFull;
+    <section class="full" id="full">
+      <button class="fullbtn" id="fullbtn">看原刊全文<span>（共 ${END[cur.id]-cur.page+1} 頁・原刊 P.${cur.page}–${END[cur.id]}）</span></button>
+      <p class="fullnote">以原刊頁面呈現，可放大、逐頁翻閱。</p>
+      <div class="contact"><h4>想進一步了解？聯繫我們</h4><p>刊物刊載的各公司聯絡窗口，點開看整頁。</p><div class="cthumbs">${figBtn(196,[196,197])}${figBtn(197,[196,197])}</div></div>
+      <p class="fcopy">頁面圖片為刊物原樣重製。© 電通行銷傳播集團</p>
+    </section>`;
+  $("#fullbtn").onclick=()=>openLB(pagesOf(cur.id),0);
+  $("#full").querySelectorAll(".figthumb").forEach(x=>x.onclick=()=>{const L=x.dataset.list.split(",").map(Number);openLB(L,L.indexOf(+x.dataset.p));});
   renderTearbox();
   $("#reader").classList.add("on"); $("#paper").scrollTop=0; $("#rclose").focus();
   setTimeout(onScroll,60);
@@ -689,6 +695,8 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("#reader").classL
 
 /* ---------- 全文（依刊物原文收錄）＋原刊頁面 ---------- */
 const FT={};
+const END={"1":11,"2":17,"3":27,"4":35,"5":43,"6":49,"7":57,"8":65,"9":71,"10":79,"11":93,"12":115,"13":127,"14":135,"15":143,"16":149,"17":159,"18":167,"19":175,"20":181,"21":187,"22":195};
+const pagesOf=id=>{const a=[];for(let p=byId(id).page;p<=END[id];p++)a.push(p);return a.concat([196,197]);};
 const pad=(n,k)=>String(n).padStart(k,"0");
 const esc=t=>t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const fmt=t=>esc(t).replace(/\[\[([0-9０-９]{1,3})\]\]/g,"<sup>$1</sup>").replace(/^【(.+?)】/,'<span class="lbl">$1</span>');
@@ -696,7 +704,7 @@ function loadFull(id){
   if(FT[id]) return Promise.resolve(FT[id]);
   return fetch(`fulltext/a${pad(id,2)}.json`).then(r=>{if(!r.ok)throw 0;return r.json();}).then(d=>FT[id]=d);
 }
-const figBtn=(p,list)=>`<button class="figthumb" data-p="${p}" data-list="${list.join(",")}"><img loading="lazy" src="pages/thumb/p${pad(p,3)}.webp" alt="原刊第 ${p} 頁" width="120" height="160"><span><b>圖表見原刊 P.${p}</b>點開看整頁，可放大</span></button>`;
+const figBtn=(p,list)=>`<button class="figthumb" data-p="${p}" data-list="${list.join(",")}"><img loading="lazy" src="pages/thumb/p${pad(p,3)}.webp" alt="原刊第 ${p} 頁" width="120" height="160"><span><b>${p>=196?`聯絡窗口（${p-195} / 2）`:`圖表見原刊 P.${p}`}</b>點開看整頁，可放大</span></button>`;
 function fullHTML(d){
   const figs=d.figs, last={}; d.paras.forEach((q,i)=>last[q.p]=i);
   const done=new Set(); let h=`<p class="fhead">全文・原刊 P.${d.start}–${d.end}</p>`;
@@ -728,7 +736,9 @@ function toggleFull(){
 /* 看圖模式：原刊頁面放大、上下頁 */
 let LB={list:[],i:0};
 function openLB(list,i){LB={list,i};$("#lb").hidden=false;$("#lbbody").classList.remove("z");showLB();setTimeout(()=>$("#lbclose").focus(),30);}
-function showLB(){const p=LB.list[LB.i];$("#lbimg").src=`pages/full/p${pad(p,3)}.webp`;$("#lbimg").alt=`原刊第 ${p} 頁`;$("#lbt").textContent=`原刊 P.${p}（${LB.i+1} / ${LB.list.length}）`;
+function showLB(){const p=LB.list[LB.i];$("#lbimg").src=`pages/full/p${pad(p,3)}.webp`;$("#lbimg").alt=`原刊第 ${p} 頁`;const art=LB.list.filter(x=>x<196).length;
+  $("#lbt").textContent=p>=196?`聯絡窗口（${LB.i+1} / ${LB.list.length}）`:`原刊 P.${p}（第 ${LB.i+1} / ${art} 頁${art<LB.list.length?"，最後附聯絡窗口":""}）`;
+  [LB.list[LB.i+1],LB.list[LB.i-1]].forEach(q=>{if(q){const im=new Image();im.src=`pages/full/p${pad(q,3)}.webp`;}});
   $("#lbprev").disabled=LB.i===0;$("#lbnext").disabled=LB.i===LB.list.length-1;$("#lbbody").scrollTop=0;}
 function closeLB(){$("#lb").hidden=true;$("#lbimg").removeAttribute("src");}
 $("#lbclose").onclick=closeLB;
