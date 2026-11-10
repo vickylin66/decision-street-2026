@@ -149,7 +149,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 .finale{position:absolute;left:24px;bottom:24px;z-index:6;display:none}
 .finale.on .card{animation:cardIn .8s ease both}
-.finale.late .card{animation-delay:4.6s}
+.finale.late .card{animation-delay:3.2s}
 @keyframes cardIn{from{opacity:0;transform:translateY(12px)}}
 .finale.on{display:flex}
 .finale .card{background:var(--sheet);border:1px solid var(--line);border-radius:4px;padding:22px 24px;width:min(340px,80vw)}
@@ -271,7 +271,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 
 /* 結尾卡片：燈籠紙般的暖米色長卡，貼在畫面底部，天空留給燈光秀 */
 .finale{left:50%;right:auto;bottom:18px;transform:translateX(-50%);width:min(880px,calc(100% - 40px))}
-.finale .card{width:100%;display:grid;grid-template-columns:1fr auto;grid-template-areas:"head cta" "q cta" "sub cta";column-gap:28px;align-items:center;
+.finale .card{width:100%;display:grid;grid-template-columns:1fr auto;grid-template-areas:"head cta" "sky cta" "q cta" "sub cta";column-gap:28px;align-items:center;
   background:rgba(255,248,236,.86);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(200,155,74,.55);border-radius:10px;padding:16px 24px;box-shadow:0 12px 34px rgba(120,60,40,.22);color:#3B2A22}
 .fhead{grid-area:head;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .flamp{height:22px;width:auto;fill:none;stroke:#8A5A1F;stroke-width:1.6;stroke-linejoin:round}.flamp .b{fill:#FFC46B}
@@ -341,7 +341,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .contact{margin:40px 0 0;padding:20px;border:1px solid color-mix(in srgb,#C89B4A 55%,transparent);border-radius:8px;background:color-mix(in srgb,#FFC46B 10%,var(--sheet))}
 .contact h4{margin:0 0 4px!important;color:#8A5A1F!important;font-family:'Cactus Classical Serif','Noto Serif TC',serif;font-weight:400;font-size:20px!important}
 .contact p{font-size:14px!important;margin:0 0 6px!important;color:var(--ink-2)!important}
-.cthumbs{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:400px}.cthumbs .figthumb{margin:6px 0 0;flex-direction:column;align-items:flex-start}.cthumbs .figthumb img{width:100%}
+.cthumbs{display:grid;grid-template-columns:1fr;gap:10px;max-width:260px}.cthumbs .figthumb{margin:6px 0 0;flex-direction:column;align-items:flex-start}.cthumbs .figthumb img{width:100%}
 .fcopy{font-size:12.5px!important;color:var(--ink-3)!important;margin:28px 0 14px!important}
 .fload{color:var(--ink-2)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .contact h4{color:#F2C77A!important}}
@@ -356,6 +356,11 @@ button{font:inherit;color:inherit;cursor:pointer}
 @media (max-width:860px){.lbbar{font-size:12px;gap:5px;padding:8px 10px}.lbbar .ghost{padding:5px 8px}.figthumb img{width:90px}}
 .no3dmsg{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-width:min(460px,86%);margin:0;padding:14px 18px;text-align:center;font-size:14px;line-height:1.7;color:var(--ink-2);background:var(--sheet);border:1px dashed var(--line);border-radius:6px}
 .stage.no3d .cap{display:none}
+
+.finale .fsky{grid-area:sky;margin:8px 0 2px;font-family:'Cactus Classical Serif','Noto Serif TC',serif;font-size:32px;letter-spacing:.12em;line-height:1.3;color:#B8741A}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .finale .fsky{color:#FFC46B}}
+@media (max-width:860px){.finale .fsky{font-size:24px}.finale .card{grid-template-areas:"head" "sky" "q" "cta"}}
+.lbbody img[src*="contact"]{max-width:min(100%,760px)}
 </style>
 </head>
 <body>
@@ -387,6 +392,7 @@ button{font:inherit;color:inherit;cursor:pointer}
     <div class="floorTip" id="tip"></div>
     <div class="finale" id="finale"><div class="card">
   <div class="fhead"><svg class="flamp" viewBox="0 0 24 34" aria-hidden="true"><path d="M12 1V7M4 13L12 7L20 13Z"/><path class="b" d="M5 13H19L16.5 27H7.5Z"/><path d="M10 27L12 31L14 27"/></svg><h2>整條老街都亮了</h2><span class="fn" id="fn"></span></div>
+  <p class="fsky" id="fsky"></p>
   <blockquote class="fq" id="fq" aria-live="polite"></blockquote>
   <p class="fsub">22 篇讀完，22 間街屋全部點亮。點任何一間街屋，都能回去重讀那篇。</p>
   <div class="cta"><button class="fbtn main" id="again">再放一次天燈</button><button class="fbtn" id="contactF">聯繫我們</button><button class="fbtn" id="closeF">回到老街</button></div>
@@ -665,7 +671,7 @@ function openReader(id){
     <section class="full" id="full">
       <button class="fullbtn" id="fullbtn">看原刊全文<span>（共 ${END[cur.id]-cur.page+1} 頁・原刊 P.${cur.page}–${END[cur.id]}）</span></button>
       <p class="fullnote">以原刊頁面呈現，可放大、逐頁翻閱。</p>
-      <div class="contact"><h4>想進一步了解？聯繫我們</h4><p>刊物刊載的各公司聯絡窗口，點開看整頁。</p><div class="cthumbs">${figBtn(196,[196,197])}${figBtn(197,[196,197])}</div></div>
+      <div class="contact"><h4>想進一步了解？聯繫我們</h4><p>刊物刊載的各公司聯絡窗口，點開看整頁。</p><div class="cthumbs">${figBtn(196,[196])}</div></div>
       <p class="fcopy">頁面圖片為刊物原樣重製。© 電通行銷傳播集團</p>
     </section>`;
   $("#fullbtn").onclick=()=>openLB(pagesOf(cur.id),0);
@@ -696,7 +702,8 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("#reader").classL
 /* ---------- 全文（依刊物原文收錄）＋原刊頁面 ---------- */
 const FT={};
 const END={"1":11,"2":17,"3":27,"4":35,"5":43,"6":49,"7":57,"8":65,"9":71,"10":79,"11":93,"12":115,"13":127,"14":135,"15":143,"16":149,"17":159,"18":167,"19":175,"20":181,"21":187,"22":195};
-const pagesOf=id=>{const a=[];for(let p=byId(id).page;p<=END[id];p++)a.push(p);return a.concat([196,197]);};
+const pagesOf=id=>{const a=[];for(let p=byId(id).page;p<=END[id];p++)a.push(p);return a.concat([196]);};
+const imgOf=(p,k)=>p===196?`pages/contact${k==="thumb"?"_t":""}.webp`:`pages/${k}/p${pad(p,3)}.webp`;
 const pad=(n,k)=>String(n).padStart(k,"0");
 const esc=t=>t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const fmt=t=>esc(t).replace(/\[\[([0-9０-９]{1,3})\]\]/g,"<sup>$1</sup>").replace(/^【(.+?)】/,'<span class="lbl">$1</span>');
@@ -704,7 +711,7 @@ function loadFull(id){
   if(FT[id]) return Promise.resolve(FT[id]);
   return fetch(`fulltext/a${pad(id,2)}.json`).then(r=>{if(!r.ok)throw 0;return r.json();}).then(d=>FT[id]=d);
 }
-const figBtn=(p,list)=>`<button class="figthumb" data-p="${p}" data-list="${list.join(",")}"><img loading="lazy" src="pages/thumb/p${pad(p,3)}.webp" alt="原刊第 ${p} 頁" width="120" height="160"><span><b>${p>=196?`聯絡窗口（${p-195} / 2）`:`圖表見原刊 P.${p}`}</b>點開看整頁，可放大</span></button>`;
+const figBtn=(p,list)=>`<button class="figthumb" data-p="${p}" data-list="${list.join(",")}"><img loading="lazy" src="${imgOf(p,"thumb")}" alt="${p===196?"聯絡窗口":`原刊第 ${p} 頁`}" width="120" height="160"><span><b>${p>=196?"各公司聯絡窗口":`圖表見原刊 P.${p}`}</b>點開看整頁，可放大</span></button>`;
 function fullHTML(d){
   const figs=d.figs, last={}; d.paras.forEach((q,i)=>last[q.p]=i);
   const done=new Set(); let h=`<p class="fhead">全文・原刊 P.${d.start}–${d.end}</p>`;
@@ -719,7 +726,7 @@ function fullHTML(d){
   });
   flush(9999);
   if(d.notes.length) h+=`<div class="fnotes"><h4>註解與資料來源</h4>${d.notes.map(n=>`<p>${fmt(n)}</p>`).join("")}</div>`;
-  h+=`<div class="contact"><h4>想進一步了解？聯繫我們</h4><p>刊物刊載的各公司聯絡窗口，點開看整頁。</p><div class="cthumbs">${figBtn(196,[196,197])}${figBtn(197,[196,197])}</div></div>`;
+  h+=`<div class="contact"><h4>想進一步了解？聯繫我們</h4><p>刊物刊載的各公司聯絡窗口，點開看整頁。</p><div class="cthumbs">${figBtn(196,[196])}</div></div>`;
   h+=`<p class="fcopy">全文依刊物原文收錄，頁面圖片為刊物原樣重製。© 電通行銷傳播集團</p><button class="btn alt" id="backTear">讀完了，回到上方撕下這一張</button>`;
   return h;
 }
@@ -736,9 +743,9 @@ function toggleFull(){
 /* 看圖模式：原刊頁面放大、上下頁 */
 let LB={list:[],i:0};
 function openLB(list,i){LB={list,i};$("#lb").hidden=false;$("#lbbody").classList.remove("z");showLB();setTimeout(()=>$("#lbclose").focus(),30);}
-function showLB(){const p=LB.list[LB.i];$("#lbimg").src=`pages/full/p${pad(p,3)}.webp`;$("#lbimg").alt=`原刊第 ${p} 頁`;const art=LB.list.filter(x=>x<196).length;
-  $("#lbt").textContent=p>=196?`聯絡窗口（${LB.i+1} / ${LB.list.length}）`:`原刊 P.${p}（第 ${LB.i+1} / ${art} 頁${art<LB.list.length?"，最後附聯絡窗口":""}）`;
-  [LB.list[LB.i+1],LB.list[LB.i-1]].forEach(q=>{if(q){const im=new Image();im.src=`pages/full/p${pad(q,3)}.webp`;}});
+function showLB(){const p=LB.list[LB.i];$("#lbimg").src=imgOf(p,"full");$("#lbimg").alt=p===196?"各公司聯絡窗口":`原刊第 ${p} 頁`;const art=LB.list.filter(x=>x<196).length;
+  $("#lbt").textContent=p>=196?"各公司聯絡窗口":`原刊 P.${p}（第 ${LB.i+1} / ${art} 頁${art<LB.list.length?"，最後附聯絡窗口":""}）`;
+  [LB.list[LB.i+1],LB.list[LB.i-1]].forEach(q=>{if(q){const im=new Image();im.src=imgOf(q,"full");}});
   $("#lbprev").disabled=LB.i===0;$("#lbnext").disabled=LB.i===LB.list.length-1;$("#lbbody").scrollTop=0;}
 function closeLB(){$("#lb").hidden=true;$("#lbimg").removeAttribute("src");}
 $("#lbclose").onclick=closeLB;
@@ -748,7 +755,7 @@ $("#lbzoom").onclick=()=>{const z=$("#lbbody").classList.toggle("z");$("#lbzoom"
 $("#lbimg").onclick=()=>$("#lbzoom").click();
 document.addEventListener("keydown",e=>{if($("#lb").hidden)return;
   if(e.key==="Escape"){e.stopImmediatePropagation();closeLB();} if(e.key==="ArrowLeft")$("#lbprev").click(); if(e.key==="ArrowRight")$("#lbnext").click();},true);
-$("#contactF").onclick=()=>openLB([196,197],0);
+$("#contactF").onclick=()=>openLB([196],0);
 /* ---------- tear ---------- */
 
 /* 結尾：每次放天燈，天空排出一句短語，卡片顯示完整的一段話；下次再放，換下一則 */
@@ -759,7 +766,7 @@ const ENDINGS=[
 ];
 function nextEnding(){
   const i=(S.endI||0)%ENDINGS.length; S.endI=i+1; save();
-  const q=$("#fq"); q.textContent=ENDINGS[i].text; $("#fn").textContent=`第 ${i+1} 則・共 ${ENDINGS.length} 則`;
+  const q=$("#fq"); q.textContent=ENDINGS[i].text; $("#fsky").textContent=`「${ENDINGS[i].sky}」`; $("#fn").textContent=`第 ${i+1} 則・共 ${ENDINGS.length} 則`;
   return ENDINGS[i].sky;
 }
 let revealT;
@@ -796,6 +803,7 @@ function tear(id){
   const x=byId(id); const sh=$("#topSheet");
   const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
   reveal(true,S.built.length+1===22?0:4200);
+  setTimeout(()=>T.prep(id),60);   // 撕下的瞬間先在背景建好街屋，光點落地時直接出現，不會卡頓
   if(sh){ if(reduce){sh.innerHTML=sheetHTML(x);sh.classList.add("tearing");} else flyToStreet(sh,x); }
   setTimeout(()=>{
     S.built.push(id); save(); renderAll(); T.drop(S.built.length-1);
@@ -1062,10 +1070,63 @@ function makeStreet(){
         stringG.userData.mat=lm; root.add(stringG); }
     }
   }
+  /* 老街周邊景物：遠山、後排屋頂、廣場花圃、行道樹。全部以程式即時繪製，不使用圖片，不增加下載量 */
+  const scenery=[];
+  (function(){
+    const mat=(c)=>{const m=new THREE.MeshLambertMaterial({color:c});scenery.push({m,day:c});return m;};
+    // 背景：層層延伸的老街屋頂，屋頂之間點綴樹冠綠意
+    const BG="ab";
+    const paperBg=new THREE.Color(0xEFEEEA);
+    const fade=(c,t)=>new THREE.Color(c).lerp(paperBg,t).getHex();
+    const o=new THREE.Object3D(), geo=new THREE.BoxGeometry(1,1,1);
+    const tri=new THREE.Shape(); tri.moveTo(-.5,0); tri.lineTo(0,1); tri.lineTo(.5,0); tri.closePath();
+    const prism=new THREE.ExtrudeGeometry(tri,{depth:1,bevelEnabled:false}); prism.translate(0,0,-.5);   // 山牆朝外的斜屋頂
+    const rows=[[RR+2.4,26,1.9,.16,.0],[RR+4.4,30,1.9,.14,.22],[RR+6.6,34,1.9,.12,.4],[RR+9.2,38,1.9,.1,.56]];
+    rows.forEach(([r0,n,h0,hv,f],ri)=>{
+      if(ri>0&&!BG.includes("a")) return;
+      const span=ri===0?(2*TH-.5):(2*TH-.2-ri*.12), start=-span/2;
+      const wallC=[0xE4DED3,0xE6D6C3,0xE9DDD0,0xE4D6C6], tileC=[0xD3C3B0,0xB0503C,0xBE6247,0xC4704F];
+      const walls=new THREE.InstancedMesh(geo,mat(fade(wallC[ri],f)),n), roofs=new THREE.InstancedMesh(ri===0?geo:prism,mat(fade(tileC[ri],f)),n);
+      for(let k=0;k<n;k++){
+        const a=start+span*k/(n-1), r=r0+((k*13)%3)*.35, h=h0+((k*29)%7)*hv, w=.85+((k*7)%3)*.22;
+        o.position.set(r*Math.sin(a),h/2,CZ-r*Math.cos(a)); o.rotation.set(0,-a,0); o.scale.set(w,h,1.2); o.updateMatrix(); walls.setMatrixAt(k,o.matrix);
+        const pitched=ri>0&&(k%3!==1);
+        o.position.y=h+(pitched?0:.06); o.scale.set(w+.1,pitched?.42:.12,1.3); o.updateMatrix(); roofs.setMatrixAt(k,o.matrix);
+      }
+      root.add(walls); root.add(roofs);
+      if(BG.includes("b")&&ri<3){
+        const m=Math.round(n*.35), tc=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(.42,0),mat(fade(ri===0?0x6E9A4E:0x7FA35E,f*.8)),m);
+        for(let k=0;k<m;k++){ const a=start+span*(k+.5)/m+.03, r=r0-.5+((k*17)%3)*.3, s2=.8+((k*11)%4)*.15;
+          o.position.set(r*Math.sin(a),h0+.4+((k*5)%3)*.3,CZ-r*Math.cos(a)); o.rotation.set(0,k,0); o.scale.set(s2,s2*1.1,s2); o.updateMatrix(); tc.setMatrixAt(k,o.matrix); }
+        root.add(tc);
+      }
+    });
+    // 避開四條道路的角度
+    const ave=TS.map(([a,b])=>(a+b)/2), avW=TS.map(([a,b])=>Math.min(1.5,(b-a)*RR*.62)/2/(RIN+.3)+.05);
+    const clear=a=>ave.every((c,i)=>Math.abs(a-c)>avW[i]);
+    // 廣場花圃
+    const cols=[0xE35D6A,0xF2A7B5,0xF7D36B,0xFFFFFF,0xC8372D], fl=[], fg=new THREE.SphereGeometry(.055,6,5);
+    for(let a=-TH-.05;a<=TH+.05;a+=.045){ if(!clear(a)) continue;
+      for(let j=0;j<3;j++){ const r=RIN+.12+j*.11+((a*100|0)%2)*.03; fl.push([r*Math.sin(a+j*.012),.07,CZ-r*Math.cos(a+j*.012),cols[(fl.length*7)%cols.length]]); } }
+    const fmesh=new THREE.InstancedMesh(fg,new THREE.MeshLambertMaterial({color:0xffffff}),fl.length);
+    fl.forEach(([x,y,z,c],i)=>{o.position.set(x,y,z);o.rotation.set(0,0,0);o.scale.set(1,1,1);o.updateMatrix();fmesh.setMatrixAt(i,o.matrix);fmesh.setColorAt(i,new THREE.Color(c));});
+    root.add(fmesh);
+    const bed=new THREE.Mesh(new THREE.RingGeometry(RIN+.04,RIN+.42,72,1,Math.PI/2-TH-.09,2*TH+.18),new THREE.MeshBasicMaterial({color:0x8FAE6E,side:THREE.DoubleSide}));
+    bed.rotation.x=-Math.PI/2; bed.position.set(0,.01,CZ); root.add(bed); pave.push({m:bed,col:0x8FAE6E});
+    // 行道樹（低多邊形）
+    const trees=[]; ave.forEach((c,i)=>{ if(i<ave.length-1){ const g=(TS[i][1]+TS[i+1][0])/2; trees.push([g-.06,RIN+.9],[g+.06,RIN+1.7]); } });
+    trees.push([-TH+.05,RIN+.8],[TH-.05,RIN+.8]);
+    const trunk=new THREE.InstancedMesh(new THREE.CylinderGeometry(.04,.06,.55,6),mat(0x7A5236),trees.length);
+    const crown=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(.34,0),mat(0x6E9A4E),trees.length);
+    trees.forEach(([a,r],i)=>{ const x=r*Math.sin(a), z=CZ-r*Math.cos(a), s=.7+((i*31)%5)*.06;
+      o.rotation.set(0,i,0); o.position.set(x,.27,z); o.scale.set(1,1,1); o.updateMatrix(); trunk.setMatrixAt(i,o.matrix);
+      o.position.set(x,.75*s,z); o.scale.set(s,s*1.15,s); o.updateMatrix(); crown.setMatrixAt(i,o.matrix); });
+    root.add(trunk); root.add(crown);
+  })();
   const anims=[];
   function place(id,animate){
     if(houses[id]) return;
-    const g=makeHouse(id); houses[id]=g; root.add(g); ghosts[id].visible=false;
+    const g=prepared[id]||makeHouse(id); delete prepared[id]; g.scale.y=1; houses[id]=g; if(!g.parent) root.add(g); ghosts[id].visible=false;
     if(animate&&!matchMedia("(prefers-reduced-motion:reduce)").matches){g.scale.y=.01;anims.push({g,t0:performance.now()});}
     lightUp(id,animate);
   }
@@ -1089,15 +1150,18 @@ function makeStreet(){
     lamps.forEach(l=>l.material.emissiveIntensity=on?1.4:.25);
     if(stringG) stringG.userData.mat.emissiveIntensity=on?1.5:.9;
     pave.forEach(p=>p.m.material.color.set(on?new THREE.Color(p.col).multiplyScalar(.9):p.col));
+    scenery.forEach(x=>x.m.color.set(on?new THREE.Color(x.day).lerp(new THREE.Color(0xC9A0A8),.28):x.day));
     avenues.forEach(a=>a.m.material.color.set(on?0xE6D6D2:0xffffff));
     road.material.color.set(on?0xB89A98:(dark()?0x2a2a27:0xE2DFD8));
   }
   // interaction
-  let band=false; let aim=0, rotY=0, vel=0, drag=false, lx=0, dist=15, auto=true, moved=0;
+  let band=false, bk=-1, dd=9.5; let aim=0, rotY=0, vel=0, drag=false, lx=0, dist=15, auto=true, moved=0;
   cv.addEventListener("pointerdown",e=>{drag=true;lx=e.clientX;moved=0;cv.setPointerCapture(e.pointerId);auto=false});
   cv.addEventListener("pointermove",e=>{ if(drag){const dx=e.clientX-lx;lx=e.clientX;rotY-=dx*.004;vel=-dx*.004;moved+=Math.abs(dx);} else hover(e); });
   cv.addEventListener("pointerup",e=>{drag=false; if(moved<5) pick(e); else aim=rotY; setTimeout(()=>auto=true,2500)});
   cv.addEventListener("wheel",e=>{e.preventDefault();dist=Math.max(6,Math.min(20,dist+e.deltaY*.01))},{passive:false});
+  const prepared={};
+  function prep(id){ if(!houses[id]&&!prepared[id]){ const g=makeHouse(id); g.scale.y=.001; root.add(g); prepared[id]=g; /* 先以壓扁狀態放進場景，讓顯示卡提早準備材質 */ } }
   const ray=new THREE.Raycaster(), mv=new THREE.Vector2();
   function hit(e){const r=cv.getBoundingClientRect();mv.x=((e.clientX-r.left)/r.width)*2-1;mv.y=-((e.clientY-r.top)/r.height)*2+1;ray.setFromCamera(mv,cam);
     const h=ray.intersectObjects(Object.values(houses),true);return h[0]&&h[0].object.userData.id;}
@@ -1117,19 +1181,19 @@ function makeStreet(){
   /* 天燈燈光秀：光點從街上升起，像無人機一樣在老街上空排出一句話 */
   let drone=null, skyLift=0;
   const dotTex=(()=>{const c=document.createElement("canvas");c.width=c.height=64;const x=c.getContext("2d");
-    const g=x.createRadialGradient(32,32,0,32,32,32);g.addColorStop(0,"rgba(255,252,238,1)");g.addColorStop(.3,"rgba(255,214,130,1)");g.addColorStop(.6,"rgba(255,176,80,.55)");g.addColorStop(1,"rgba(255,160,70,0)");
+    const g=x.createRadialGradient(32,32,0,32,32,32);g.addColorStop(0,"rgba(255,255,245,1)");g.addColorStop(.32,"rgba(255,226,150,1)");g.addColorStop(.62,"rgba(255,186,90,.6)");g.addColorStop(1,"rgba(255,160,70,0)");
     x.fillStyle=g;x.fillRect(0,0,64,64);return new THREE.CanvasTexture(c);})();
   function phrasePoints(text,lines){
     const rows=lines, fs=96, lh=fs*1.15, maxLen=Math.max(...rows.map(r=>r.length));
     const c=document.createElement("canvas");c.width=Math.ceil(maxLen*fs*1.05)+20;c.height=Math.ceil(rows.length*lh)+10;const x=c.getContext("2d");
-    x.fillStyle="#fff";x.font=`900 ${fs}px 'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif`;x.textAlign="center";x.textBaseline="middle";
+    x.fillStyle="#fff";x.font=`700 ${fs}px 'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif`;x.textAlign="center";x.textBaseline="middle";
     rows.forEach((r,i)=>x.fillText(r,c.width/2,lh*(i+.5)+5));
-    const d=x.getImageData(0,0,c.width,c.height).data; let step=5, pts=[];
-    for(;;){pts=[];for(let y=0;y<c.height;y+=step)for(let xx=0;xx<c.width;xx+=step)if(d[(y*c.width+xx)*4+3]>140)pts.push([xx/c.width-.5,.5-y/c.height]);if(pts.length<=1500||step>14)break;step++;}
+    const d=x.getImageData(0,0,c.width,c.height).data; let step=3, pts=[];
+    for(;;){pts=[];for(let y=0;y<c.height;y+=step)for(let xx=0;xx<c.width;xx+=step)if(d[(y*c.width+xx)*4+3]>140)pts.push([xx/c.width-.5,.5-y/c.height]);if(pts.length<=3600||step>14)break;step++;}
     return {pts,ar:c.width/c.height};
   }
   function skyShow(phrase){
-    if(drone){scene.remove(drone.obj);drone=null;}
+    if(drone){scene.remove(drone.obj);scene.remove(drone.halo);drone=null;}
     const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
     const a=cam.aspect, narrow=a<1.5;
     const lines=narrow&&phrase.length>4?[phrase.slice(0,Math.ceil(phrase.length/2)),phrase.slice(Math.ceil(phrase.length/2))]:[phrase];
@@ -1137,7 +1201,7 @@ function makeStreet(){
     skyLift=1; cam.updateMatrixWorld();
     const depth=dist*.78, halfH=Math.tan(THREE.MathUtils.degToRad(cam.fov/2))*depth, halfW=halfH*a;
     let w=halfW*(narrow?1.7:1.6), h=w/ar; const hm=narrow?.5:.72; if(h>halfH*hm){h=halfH*hm;w=h*ar;}
-    const cy=halfH*(narrow?.55:.42);
+    const cy=halfH*(narrow?.6:.52);   // 字落在紫色天空，不壓到遠山
     const pos=new Float32Array(pts.length*3), from=[], to=[], dl=[];
     const camPos=new THREE.Vector3(0,dist*.42+.5,dist), look=new THREE.Vector3(0,1.35+1.5,-2.6);
     const m=new THREE.Matrix4().lookAt(camPos,look,new THREE.Vector3(0,1,0)).setPosition(camPos);
@@ -1145,38 +1209,44 @@ function makeStreet(){
       const tgt=new THREE.Vector3(px*w,cy+py*h,-depth).applyMatrix4(m);
       const ang=(Math.random()-.5)*2*TH, r=RR-.5-Math.random()*3.2;
       const src=new THREE.Vector3(r*Math.sin(ang),.4,CZ-r*Math.cos(ang)); root.localToWorld(src);
-      from.push(src); to.push(tgt); dl.push(Math.random()*1600+(1-(py+.5))*500);
+      from.push(src); to.push(tgt); dl.push(Math.random()*1120+(1-(py+.5))*350);   // 速度加快 30%
       (reduce?tgt:src).toArray(pos,i*3);
     });
     const geo=new THREE.BufferGeometry(); geo.setAttribute("position",new THREE.BufferAttribute(pos,3));
-    const mat=new THREE.PointsMaterial({map:dotTex,size:Math.max(.16,w/55),transparent:true,depthWrite:false,opacity:1});
+    const mat=new THREE.PointsMaterial({map:dotTex,size:Math.max(.18,w/44),transparent:true,depthWrite:false,opacity:1});
     const obj=new THREE.Points(geo,mat); scene.add(obj);
-    drone={obj,from,to,dl,t0:performance.now(),reduce,n:pts.length};
+    const halo=new THREE.Points(geo,new THREE.PointsMaterial({map:dotTex,size:Math.max(.18,w/44)*1.6,transparent:true,depthWrite:false,opacity:.12,blending:THREE.AdditiveBlending}));
+    scene.add(halo); obj.renderOrder=2;
+    drone={obj,halo,from,to,dl,t0:performance.now(),reduce,n:pts.length};
   }
   function updDrone(t){
     if(!drone) { skyLift+=(0-skyLift)*.02; return; }
     const e=t-drone.t0, P=drone.obj.geometry.attributes.position, A=P.array, HOLD=9500, END=12500;
-    if(!drone.reduce&&e<4600){
-      for(let i=0;i<drone.n;i++){const k=Math.max(0,Math.min(1,(e-drone.dl[i])/2600)), q=k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
+    if(!drone.reduce&&e<3300){
+      for(let i=0;i<drone.n;i++){const k=Math.max(0,Math.min(1,(e-drone.dl[i])/1820)), q=k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
         const f=drone.from[i], to=drone.to[i], lift=Math.sin(q*Math.PI)*1.2;
         A[i*3]=f.x+(to.x-f.x)*q; A[i*3+1]=f.y+(to.y-f.y)*q+lift; A[i*3+2]=f.z+(to.z-f.z)*q;}
       P.needsUpdate=true;
     } else if(e>HOLD){
       const k=Math.min(1,(e-HOLD)/(END-HOLD)); for(let i=0;i<drone.n;i++){A[i*3+1]=drone.to[i].y+k*k*2.4;} P.needsUpdate=true;
-      drone.obj.material.opacity=1-k; if(k>=1){scene.remove(drone.obj);drone=null;}
+      drone.obj.material.opacity=1-k; drone.halo.material.opacity=.12*(1-k); if(k>=1){scene.remove(drone.obj);scene.remove(drone.halo);drone=null;}
     }
     
   }
   function lanternsFew(){ if(matchMedia("(prefers-reduced-motion:reduce)").matches)return; let k=0;const iv=setInterval(()=>{launch();if(++k>=18)clearInterval(iv)},260); }
   function fireworks(phrase){setNight(true);lanternsFew();if(phrase)skyShow(phrase);}
-  function resize(){const w=stage.clientWidth,h=stage.clientHeight;R.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix(); const a=w/h; band=a>3; dist=a<1.1?Math.max(9.5,9.5*1.2/a):band?Math.min(14.5,10.3+(a-3)*2):9.5;}
+  /* 鏡頭在全景帶視角與一般視角之間平滑過渡，避免展開老街時畫面跳動 */
+  function placeCam(){ const k=Math.max(0,Math.min(1,bk)), d=dd;
+    cam.position.set(0,(d*.42+skyLift*.5)*(1-k)+d*.36*k,d*(1-k)+d*.92*k);
+    cam.lookAt(0,(1.35+skyLift*1.5)*(1-k)+.9*k,-2.6*(1-k)+.4*k); }
+  function resize(){const w=stage.clientWidth,h=stage.clientHeight;if(!w||!h)return;R.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix(); const a=w/h; band=a>3; dist=a<1.1?Math.max(9.5,9.5*1.2/a):band?Math.min(14.5,10.3+(a-3)*2):9.5; if(bk<0){bk=band?1:0;dd=dist;} placeCam(); R.render(scene,cam);}
   new ResizeObserver(resize).observe(stage); resize();
   function loop(t){
     requestAnimationFrame(loop);
     if(auto&&!drag) rotY+=(aim+Math.sin(t*.00018)*.12-rotY)*.02; else if(!drag){rotY+=vel;vel*=.94;} rotY=Math.max(-TH,Math.min(TH,rotY));
     pivot.rotation.y=rotY;
     updDrone(t);
-    if(band){cam.position.set(0,dist*.36,dist*.92);cam.lookAt(0,.9,.4);}else{cam.position.set(0,dist*.42+skyLift*.5,dist);cam.lookAt(0,1.35+skyLift*1.5,-2.6);}
+    bk+=((band?1:0)-bk)*.1; dd+=(dist-dd)*.1; placeCam();
     for(let i=anims.length-1;i>=0;i--){const a=anims[i];const k=Math.min(1,(t-a.t0)/750);const e=1+2.2*Math.pow(k-1,3)+1.2*Math.pow(k-1,2);a.g.scale.y=Math.max(.01,k<1?e:1);if(k>=1)anims.splice(i,1);}
     wins.forEach(w=>{if(w.target&&houses[w.id]){const goal=night?1.25:.55;const m=w.m.material;m.emissiveIntensity+=(goal-m.emissiveIntensity)*.04;}});
     for(let i=sky.length-1;i>=0;i--){const s=sky[i];s.life++;s.m.position.y+=s.vy;s.m.position.x+=Math.sin(t*.001+s.ph)*.003;
@@ -1185,7 +1255,7 @@ function makeStreet(){
   }
   requestAnimationFrame(loop);
   matchMedia("(prefers-color-scheme:dark)").addEventListener("change",()=>{Object.keys(houses).forEach(id=>{root.remove(houses[id]);delete houses[id];});wins.length=0;sync();});
-  return {sync,drop,fireworks};
+  return {sync,drop,fireworks,prep};
 }
 /* 功能降級：3D 老街建立失敗（函式庫載入失敗、裝置不支援 3D），問卷、路線、閱讀、撕日曆照常運作 */
 function no3D(){
@@ -1193,7 +1263,7 @@ function no3D(){
   const m=document.createElement("p"); m.className="no3dmsg";
   m.textContent="這台裝置無法顯示 3D 老街，仍可正常閱讀與撕日曆。點亮的進度會照常記錄，換到支援的裝置就能看到整條街。";
   st.appendChild(m);
-  return {sync(){},drop(){},fireworks(){$("#stage").classList.add("night");}};
+  return {sync(){},drop(){},prep(){},fireworks(){$("#stage").classList.add("night");}};
 }
 const T=(()=>{
   try{
