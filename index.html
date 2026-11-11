@@ -361,6 +361,32 @@ button{font:inherit;color:inherit;cursor:pointer}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .finale .fsky{color:#FFC46B}}
 @media (max-width:860px){.finale .fsky{font-size:24px}.finale .card{grid-template-areas:"head" "sky" "q" "cta"}}
 .lbbody:not(.z) img[src*="contact"]{max-width:min(100%,760px)}
+
+/* 聯絡窗口卡片 */
+.clist{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin:10px 0 6px}
+.ccard{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--sheet);font-size:13px;line-height:1.5}
+.ccard b{font-family:var(--latin);font-size:14px;color:var(--ink)}.ccard span{color:var(--ink-2)}
+.crow{display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap}
+.cmail{font-size:13px;color:#8A5A1F;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
+.cmail:hover{color:#B8741A}
+.ccopy{font:inherit;font-size:12px;padding:1px 10px;border:1px solid #C89B4A;border-radius:999px;background:transparent;color:#8A5A1F;cursor:pointer;flex:none}
+.ccopy:hover{background:#FFC46B;border-color:#FFC46B;color:#2E1D0C}
+.cnote{font-size:12.5px!important;color:var(--ink-3)!important;margin:6px 0 0!important}
+.ctbox{width:min(780px,94vw)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .cmail,:root:not([data-theme="light"]) .ccopy{color:#F2C77A}:root:not([data-theme="light"]) .cmail:hover{color:#FFE0A6}:root:not([data-theme="light"]) .ccopy:hover{color:#2E1D0C}}
+/* AI 導覽員 */
+.tourlink{display:block;margin:18px 0 0;padding:0;border:0;background:none;font:inherit;font-size:15px;color:#8A5A1F;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tourlink{color:#F2C77A}}
+.tour{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);width:min(760px,calc(100% - 40px));z-index:7;display:none}
+.tour.on{display:block}
+.tour .card{background:rgba(255,248,236,.92);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(200,155,74,.55);border-radius:10px;padding:16px 22px;box-shadow:0 12px 34px rgba(120,60,40,.2);color:#3B2A22;animation:cardIn .5s ease both}
+.tstep{margin:0;font-size:12px;color:#9A7B62;letter-spacing:.04em}
+.tour h3{margin:4px 0 6px;font-family:'Cactus Classical Serif','Noto Serif TC',serif;font-weight:400;font-size:24px;color:#8A5A1F}
+.tour p#tourB{margin:0 0 12px;font-size:15px;line-height:1.75}
+.tnav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.tnav .sp{flex:1}
+.stage.touring .cap,.stage.touring .expand,.stage.touring .skybtn{display:none}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tour .card{background:rgba(52,34,32,.88);color:#FBEBD3}:root:not([data-theme="light"]) .tour h3{color:#F2C77A}}
+@media (max-width:860px){.clist{grid-template-columns:1fr 1fr;gap:6px}.ccard{padding:8px 9px;font-size:12px}.cmail{font-size:11.5px}.ccopy{font-size:11px;padding:1px 8px}.tour{bottom:10px;width:calc(100% - 20px)}.tour .card{padding:12px 14px}.tour h3{font-size:19px}.tour p#tourB{font-size:14px}}
 </style>
 </head>
 <body>
@@ -370,6 +396,7 @@ button{font:inherit;color:inherit;cursor:pointer}
     <span class="yr">2026</span>
     <span class="sp"></span>
     <span class="floors" aria-live="polite"><b id="fl">0</b>/ 22<span class="of"> 間亮燈</span></span>
+    <button class="ghost" id="tourBtn">老街導覽</button>
     <button class="ghost" id="reQuiz">重新選路線</button>
     <button class="ghost" id="reset">清空進度</button>
   </header>
@@ -400,6 +427,10 @@ button{font:inherit;color:inherit;cursor:pointer}
     <p class="cap" id="cap">由左到右：序章、People、Model、AI 四個街區。拖曳可轉動，點亮的街屋點一下就能回到那篇。</p>
     <button class="expand" id="expand" aria-pressed="false">展開老街</button>
     <button class="expand skybtn" id="skybtn" hidden>放天燈</button>
+    <div class="tour" id="tour" role="dialog" aria-label="AI 導覽員"><div class="card">
+      <p class="tstep" id="tourStep"></p><h3 id="tourT"></h3><p id="tourB" aria-live="polite"></p>
+      <div class="tnav"><button class="fbtn" id="tourPrev">上一站</button><button class="fbtn main" id="tourNext">下一站</button><button class="fbtn main" id="tourGo" hidden></button><button class="fbtn" id="tourAll" hidden>直接看全部 22 篇</button><span class="sp"></span><button class="linkbtn" id="tourClose">結束導覽</button></div>
+    </div></div>
   </main>
 </div>
 
@@ -425,6 +456,7 @@ button{font:inherit;color:inherit;cursor:pointer}
       <button class="btn" id="go">回答三個問題，拿到我的路線</button>
       <button class="btn alt" id="skip">直接看全部 22 篇</button>
     </div>
+    <button class="tourlink" id="tourIntro">第一次來？先讓 AI 導覽員帶你逛一圈老街 →</button>
   </div>
   <div class="peek" aria-hidden="true"><svg id="peek101" viewBox="-3.8 2.5 7.6 7" preserveAspectRatio="xMidYMax meet" style="width:100%;height:auto;display:block"></svg></div>
 </section>
@@ -453,6 +485,7 @@ button{font:inherit;color:inherit;cursor:pointer}
   <div class="lbbar"><span id="lbt"></span><span class="sp"></span><button class="ghost" id="lbzoom">放大</button><button class="ghost" id="lbprev" aria-label="上一頁">‹ 上一頁</button><button class="ghost" id="lbnext" aria-label="下一頁">下一頁 ›</button><button class="ghost" id="lbclose">關閉</button></div>
   <div class="lbbody" id="lbbody"><img id="lbimg" alt=""></div>
 </div>
+<div class="modal" id="ctm" role="dialog" aria-modal="true" aria-labelledby="cth"><div class="quiz ctbox"><h2 id="cth">聯繫我們</h2><p class="note">電通集團各公司的聯絡窗口。點 email 就能寫信，沒有設定郵件程式的話，可以按「複製」。</p><div id="ctbody"></div><div class="nav"><span></span><button class="btn" id="ctclose">關閉</button></div></div></div>
 <div class="toast" id="toast" role="status"></div>
 <span class="sr" aria-live="polite" id="live"></span>
 
@@ -492,14 +525,13 @@ function makeRoute(a){
 }
 /* ---------- 第二階段：進階路線（依《三階段閱讀設計》） ---------- */
 const P2={deepLevel:1.8, fillLeft:2, count:5};   // 建議規則參數
-const MODES={deep:{name:"往深處走",desc:"同一個主題、難度更高的文章"},side:{name:"往旁邊走",desc:"相鄰角色會讀、同主題的文章"},fill:{name:"把街區點滿",desc:"把已讀最多的街區補到全亮"}};
+const MODES={deep:{name:"往深處走",desc:"同一個主題、難度更高的文章"},side:{name:"往旁邊走",desc:"相鄰角色會讀、同主題的文章"}};
 const done=r=>r&&r.length&&r.every(id=>S.built.includes(id));
 function fillTarget(){
   const st=Object.keys(CH).map(k=>{const all=ARTS.filter(x=>x.ch===k);const b=all.filter(x=>S.built.includes(x.id)).length;return {k,b,left:all.length-b};}).filter(o=>o.left>0&&o.b>=2);   // 至少已讀 2 篇才列入，避免固定入口第 2 篇讓序章總是被建議
   st.sort((p,q)=>p.left-q.left||q.b-p.b); return st[0]||null;
 }
 function suggestMode(){
-  const f=fillTarget(); if(f&&f.left<=P2.fillLeft) return "fill";
   const avg=S.route.reduce((s,id)=>s+byId(id).level,0)/S.route.length;
   return avg<P2.deepLevel?"deep":"side";
 }
@@ -530,8 +562,8 @@ function stage1HTML(){
   let h=`<div class="s2card"><h3>你的路線完成了</h3><p class="s2sub">這是你讀過的每篇文章的一句重點。街口也掛起了你的招牌。</p><ol class="s2pts">${pts}</ol>`;
   if(!S.route2){
     if(S.pause) h+=`<button class="s2again" id="s2open">選擇下一步</button>`;
-    else{const sg=suggestMode(), f=fillTarget();
-      h+=`<div class="s2opts">`+Object.keys(MODES).filter(k=>k!=="fill"||f).map(k=>`<button class="s2opt ${k===sg?"sg":""}" data-m="${k}"><span class="nm">${MODES[k].name}${k===sg?`<em>建議</em>`:""}</span><span class="ds">${k==="fill"?`${CH[f.k].name} 街區還差 ${f.left} 間就全亮`:MODES[k].desc}</span></button>`).join("")
+    else{const sg=suggestMode();
+      h+=`<div class="s2opts">`+Object.keys(MODES).map(k=>`<button class="s2opt ${k===sg?"sg":""}" data-m="${k}"><span class="nm">${MODES[k].name}${k===sg?`<em>建議</em>`:""}</span><span class="ds">${MODES[k].desc}</span></button>`).join("")
         +`<button class="s2opt rest" data-m="rest"><span class="nm">先到這裡</span><span class="ds">不推薦文章，保留進度</span></button></div>`;}
   }
   return h+`</div>`;
@@ -671,11 +703,11 @@ function openReader(id){
     <section class="full" id="full">
       <button class="fullbtn" id="fullbtn">看原刊全文<span>（共 ${END[cur.id]-cur.page+1} 頁・原刊 P.${cur.page}–${END[cur.id]}）</span></button>
       <p class="fullnote">以原刊頁面呈現，可放大、逐頁翻閱。</p>
-      <div class="contact"><h4>想進一步了解？聯繫我們</h4><p>刊物刊載的各公司聯絡窗口，點開看整頁。</p><div class="cthumbs">${figBtn(196,[196])}</div></div>
+      <div class="contact"><h4>想進一步了解？聯繫我們</h4><p>電通集團各公司的聯絡窗口。點 email 就能寫信，沒有設定郵件程式的話，可以按「複製」。</p>${contactHTML()}</div>
       <p class="fcopy">頁面圖片為刊物原樣重製。© 電通行銷傳播集團</p>
     </section>`;
   $("#fullbtn").onclick=()=>openLB(pagesOf(cur.id),0);
-  $("#full").querySelectorAll(".figthumb").forEach(x=>x.onclick=()=>{const L=x.dataset.list.split(",").map(Number);openLB(L,L.indexOf(+x.dataset.p));});
+  wireContacts($("#full"));
   renderTearbox();
   $("#reader").classList.add("on"); $("#paper").scrollTop=0; $("#rclose").focus();
   setTimeout(onScroll,60);
@@ -755,7 +787,62 @@ $("#lbzoom").onclick=()=>{const z=$("#lbbody").classList.toggle("z");$("#lbzoom"
 $("#lbimg").onclick=()=>$("#lbzoom").click();
 document.addEventListener("keydown",e=>{if($("#lb").hidden)return;
   if(e.key==="Escape"){e.stopImmediatePropagation();closeLB();} if(e.key==="ArrowLeft")$("#lbprev").click(); if(e.key==="ArrowRight")$("#lbnext").click();},true);
-$("#contactF").onclick=()=>openLB([196],0);
+$("#contactF").onclick=openContacts;
+/* ---------- 聯絡窗口（依原刊 P.196–197；email 於瀏覽時才組合，降低被自動蒐集） ---------- */
+const CONTACTS=[
+ ["Amplifi","安浦菲","陳美妤","總經理","Melinda.Chen","dentsu.com"],
+ ["CARAT","凱絡","劉家豪","董事總經理","Ego.Lau","iprospect.com"],
+ ["dentsu consult","電通商業顧問","波部篤男","董事總經理","Atsuo.Habe","dentsu.com"],
+ ["dentsu one","電通創意專業服務","紀緻謙","執行長","Gary.Chi","isobar.com"],
+ ["dentsu Solution Center","電通智能中心","邵懿文","集團策略創新長","Freda.Shao","dentsu.com"],
+ ["dentsu X","貝立德","盧炳勳","執行長","Robin.Lu","dxglobal.com"],
+ ["dentsu X","貝立德","王冠翔","總經理","Sean.Wang","dxglobal.com"],
+ ["iProspect","安布思沛","劉家豪","董事總經理","Ego.Lau","iprospect.com"],
+ ["isobar","電通創意專業服務","紀緻謙","執行長","Gary.Chi","isobar.com"],
+ ["Merkle","美庫爾","夏雨農","董事總經理","Scott.Hsia","merkle.com"],
+ ["tag","電通創意專業服務","紀緻謙","執行長","Gary.Chi","isobar.com"],
+ ["台灣電通","台灣電通","尾崎拓","董事總經理","Taku.Ozaki","dentsu.com"]];
+function contactHTML(){
+  return `<div class="clist">${CONTACTS.map(([b,co,n,t,u,d])=>`<div class="ccard"><b>${b}</b><span>${co}／${n}　${t}</span><span class="crow"><a class="cmail" data-u="${u}" data-d="${d}" href="#" aria-label="寫信給 ${n}"></a><button class="ccopy" data-u="${u}" data-d="${d}" aria-label="複製 ${n} 的 email">複製</button></span></div>`).join("")}</div>
+  <p class="cnote">依公司英文名稱排序，資料來源：刊物 P.196–197。<button class="linkbtn" data-page="196">看原刊聯絡頁</button></p>`;
+}
+function wireContacts(root){
+  root.querySelectorAll(".cmail").forEach(a=>{const e=a.dataset.u+"@"+a.dataset.d; a.href="mailto:"+e; a.innerHTML=esc(a.dataset.u)+"@<wbr>"+esc(a.dataset.d);});
+  root.querySelectorAll(".ccopy").forEach(b=>b.onclick=()=>{const e=b.dataset.u+"@"+b.dataset.d;
+    const ok=()=>{b.textContent="已複製";setTimeout(()=>b.textContent="複製",1600);};
+    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(e).then(ok,()=>prompt("請複製這個 email：",e));
+    else prompt("請複製這個 email：",e);});
+  root.querySelectorAll("[data-page]").forEach(x=>x.onclick=()=>openLB([196],0));
+}
+function openContacts(){ $("#ctbody").innerHTML=contactHTML(); wireContacts($("#ctbody")); $("#ctm").classList.add("on"); setTimeout(()=>$("#ctclose").focus(),30); }
+$("#ctclose").onclick=()=>$("#ctm").classList.remove("on");
+$("#ctm").addEventListener("click",e=>{if(e.target.id==="ctm")$("#ctm").classList.remove("on")});
+
+/* ---------- AI 導覽員：帶逛老街（導覽時整條街先亮起來預覽，結束後回到讀者自己的進度） ---------- */
+const TOUR=[
+ {k:null,t:"歡迎來到決策智慧老街",b:"我是這條街的 AI 導覽員。老街上有 22 間街屋，對應刊物的 22 篇觀點。每讀完一篇，撕下一張日曆，日曆會化成一盞燈飛到街上，點亮那間街屋。先帶你看看整條街全亮的樣子。"},
+ {k:"intro",t:"序章｜街口的牌樓",b:"街口的兩間牌樓是序章。〈AI for Growth〉從經營者的角度看 AI，〈Agentic 時代，品牌與人的真實距離〉提出全書的核心問題：品牌離 AI 越近，會不會離人越遠？"},
+ {k:"people",t:"People｜紅磚街屋",b:"紅磚街屋是 People 街區，9 篇都在談「人」：真實與信任、情緒價值、注意力、共同記憶。在 AI 時代，懂人反而成了品牌最稀缺的能力。"},
+ {k:"model",t:"Model｜巴洛克洋樓",b:"粉色洋樓是 Model 街區，5 篇談方法與模型：用 People Model 模擬消費者、重建 SOV、練出衡斷力、設計生成式體驗，以及看見組織的文化暗流。"},
+ {k:"ai",t:"AI｜木質現代街屋",b:"木質街屋是 AI 街區，6 篇走進 Agent 時代：體驗優化、AX、GEO、AI 製作，以及 AI Agent 如何改寫消費旅程。"},
+ {k:null,t:"旅程的終點，是一句話",b:"這趟旅程會一直提醒你三件事：AI 會不斷迭代，但方向由人決定；演算法算不出一個人為什麼心動；當 22 間街屋全部點亮，下一步，由你點亮。",end:true}];
+let tourI=0;
+function startTour(){ enterApp(); reveal(true,0); T.preview(true); tourI=0; $("#tour").classList.add("on"); $("#stage").classList.add("touring"); showTour(); }
+function showTour(){
+  const s=TOUR[tourI]; T.lookCh(s.k);
+  $("#tourStep").textContent=`AI 導覽員・${tourI+1} / ${TOUR.length}`; $("#tourT").textContent=s.t; $("#tourB").textContent=s.b;
+  $("#tourPrev").hidden=tourI===0; $("#tourNext").hidden=!!s.end; $("#tourGo").hidden=!s.end; $("#tourAll").hidden=!s.end;
+  $("#tourGo").textContent=S.answers?"回到我的路線":"回答三個問題，開始我的路線";
+}
+function endTour(then){ $("#tour").classList.remove("on"); $("#stage").classList.remove("touring"); T.preview(false); T.lookCh(null); reveal(false); if(then) then(); }
+$("#tourNext").onclick=()=>{tourI++;showTour();};
+$("#tourPrev").onclick=()=>{tourI--;showTour();};
+$("#tourClose").onclick=()=>endTour();
+$("#tourGo").onclick=()=>endTour(()=>{ if(!S.answers) openQuiz(); else setTab("route"); });
+$("#tourAll").onclick=()=>endTour(()=>setTab("all"));
+$("#tourBtn").onclick=startTour;
+$("#tourIntro").onclick=startTour;
+
 /* ---------- tear ---------- */
 
 /* 結尾：每次放天燈，天空排出一句短語，卡片顯示完整的一段話；下次再放，換下一則 */
@@ -868,6 +955,41 @@ function makeStreet(){
   }
   function texMat(kind,rx,ry){const t=pattern(kind).clone();t.needsUpdate=true;t.repeat.set(rx,ry);return new THREE.MeshLambertMaterial({map:t});}
   const M=c=>new THREE.MeshLambertMaterial({color:c});
+
+  /* 山頭圓牌：簡潔的圓形家號牌，顏色取自各街區建築本身的配色；不用白色或淺色（中式傳統中白色另有喪事的意涵） */
+  const PLQ={intro:{bg:"#B8322A",ring:"#C89B4A",num:"#F6D488"},   /* 牌樓：朱紅柱、赭金線腳 */
+             people:{bg:"#2F6338",ring:"#D9A441",num:"#F6D488"},  /* 紅磚街屋：綠色木窗框 */
+             model:{bg:"#8E2F2C",ring:"#D9A441",num:"#F6D488"},   /* 巴洛克洋樓：玫瑰色山頭 */
+             ai:{bg:"#2B6872",ring:"#8C6239",num:"#F6D488"}};     /* 木質街屋：藍綠屋頂與窗框 */
+  const plqCache={};
+  function plaqueTex(id,st){
+    /* 簡化雕花框：波浪花瓣邊、兩側各一道粗捲草、頂端三瓣小花；線條少而粗，小尺寸下仍看得出雕花 */
+    const key=st+id; if(plqCache[key]) return plqCache[key];
+    const P=PLQ[st], c=document.createElement("canvas"); c.width=280; c.height=180; const x=c.getContext("2d"), cx=140, cy=96;
+    const shade="rgba(30,15,10,.45)";
+    const carve=(draw)=>{ x.save(); x.translate(2.5,3); x.fillStyle=shade; x.strokeStyle=shade; draw(); x.restore(); x.fillStyle=P.ring; x.strokeStyle=P.ring; draw(); };
+    carve(()=>{ x.lineWidth=10; x.lineCap="round";                                  /* 兩側捲草 */
+      [1,-1].forEach(sd=>{ x.beginPath(); x.moveTo(cx+sd*66,cy+6); x.quadraticCurveTo(cx+sd*100,cy+30,cx+sd*118,cy+2); x.stroke();
+        x.beginPath(); x.arc(cx+sd*110,cy-6,11,0,Math.PI*2); x.lineWidth=8; x.stroke(); x.lineWidth=10; }); });
+    carve(()=>{ [[-11,-1],[0,-1.25],[11,-1]].forEach(([dx,k])=>{ x.beginPath(); x.ellipse(cx+dx,cy-74+(dx?6:0),8,14,dx*.08,0,Math.PI*2); x.fill(); }); });   /* 頂端三瓣小花 */
+    carve(()=>{ x.beginPath(); for(let k=0;k<12;k++){ const a=k/12*Math.PI*2; x.moveTo(cx+Math.cos(a)*62,cy+Math.sin(a)*62); x.arc(cx+Math.cos(a)*62,cy+Math.sin(a)*62,15,0,Math.PI*2); } x.fill();
+      x.beginPath(); x.arc(cx,cy,64,0,Math.PI*2); x.fill(); });                      /* 波浪花瓣邊 */
+    x.fillStyle=P.bg; x.beginPath(); x.arc(cx,cy,56,0,Math.PI*2); x.fill();
+    x.strokeStyle=P.num; x.globalAlpha=.5; x.lineWidth=2.5; x.beginPath(); x.arc(cx,cy,50,0,Math.PI*2); x.stroke(); x.globalAlpha=1;
+    x.font="700 66px 'Cactus Classical Serif','Noto Serif TC','Songti TC','PMingLiU',serif"; x.textAlign="center"; x.textBaseline="middle";
+    const n=String(id).padStart(2,"0"); x.fillStyle="rgba(20,8,4,.5)"; x.fillText(n,cx+2,cy+6); x.fillStyle=P.num; x.fillText(n,cx,cy+4);
+    const t=new THREE.CanvasTexture(c); t.anisotropy=4; return plqCache[key]={t,ar:c.width/c.height};
+  }
+  function addPlaque(g,id,st,v,h){
+    let y;
+    const sz=.33;   /* 四個街區統一大小 */
+    if(st==="intro") y=h+.3;
+    else if(st==="people") y=v===0?h+.14:v===1?h+.3:h+.28;
+    else if(st==="model") y=h+.3;
+    else y=h+.23;   /* AI：立在屋頂上的招牌 */
+    const {t,ar}=plaqueTex(id,st), m=new THREE.Mesh(new THREE.PlaneGeometry(sz*ar,sz),new THREE.MeshBasicMaterial({map:t,transparent:true}));
+    m.position.set(0,y,.04); g.add(m);
+  }
   const houses={}, ghosts={}, wins=[], lanterns=[];
   function makeHouse(id){
     const x=byId(id), st=x.ch, v=id%3, h=HH(id), d=1.5, h1=1.0, a=.42;
@@ -961,6 +1083,7 @@ function makeStreet(){
       if(v===2){add(box(.08,.7,.06,M(0x8C6239),W/2-.1,h-.1,.04),.5);for(let k=0;k<4;k++)add(box(.04,.08,.01,trim,W/2-.1,h+.15-k*.16,.075),.2);}   // 直立木鰭板
       lantern(-.3,h1-.25); pot(.3);
     }
+    addPlaque(g,id,st,v,h);
     // 店面玻璃（點亮時發光）
     const door=st==="ai"?new THREE.PlaneGeometry(.84,.7):new THREE.PlaneGeometry(.5,.66);
     const dm=new THREE.Mesh(door,glass());dm.position.set(0,st==="ai"?.35:.33,-a+.006);g.add(dm);edges(dm,.5);wins.push({m:dm,id});
@@ -1071,12 +1194,13 @@ function makeStreet(){
     }
   }
   /* 老街周邊景物：遠山、後排屋頂、廣場花圃、行道樹。全部以程式即時繪製，不使用圖片，不增加下載量 */
-  const scenery=[];
+  const scenery=[], bgMats=[];
   (function(){
     const mat=(c)=>{const m=new THREE.MeshLambertMaterial({color:c});scenery.push({m,day:c});return m;};
+    const bmat=(c)=>{const m=mat(c);bgMats.push(m);return m;};
     // 背景：層層延伸的老街屋頂，屋頂之間點綴樹冠綠意
     const BG="ab";
-    const paperBg=new THREE.Color(0xEFEEEA);
+    const paperBg=new THREE.Color(dark()?0x1D1D1B:0xEFEEEA);
     const fade=(c,t)=>new THREE.Color(c).lerp(paperBg,t).getHex();
     const o=new THREE.Object3D(), geo=new THREE.BoxGeometry(1,1,1);
     const tri=new THREE.Shape(); tri.moveTo(-.5,0); tri.lineTo(0,1); tri.lineTo(.5,0); tri.closePath();
@@ -1086,7 +1210,7 @@ function makeStreet(){
       if(ri>0&&!BG.includes("a")) return;
       const span=ri===0?(2*TH-.5):(2*TH-.2-ri*.12), start=-span/2;
       const wallC=[0xE4DED3,0xE6D6C3,0xE9DDD0,0xE4D6C6], tileC=[0xD3C3B0,0xB0503C,0xBE6247,0xC4704F];
-      const walls=new THREE.InstancedMesh(geo,mat(fade(wallC[ri],f)),n), roofs=new THREE.InstancedMesh(ri===0?geo:prism,mat(fade(tileC[ri],f)),n);
+      const walls=new THREE.InstancedMesh(geo,bmat(fade(wallC[ri],f)),n), roofs=new THREE.InstancedMesh(ri===0?geo:prism,bmat(fade(tileC[ri],f)),n);
       for(let k=0;k<n;k++){
         const a=start+span*k/(n-1), r=r0+((k*13)%3)*.35, h=h0+((k*29)%7)*hv, w=.85+((k*7)%3)*.22;
         o.position.set(r*Math.sin(a),h/2,CZ-r*Math.cos(a)); o.rotation.set(0,-a,0); o.scale.set(w,h,1.2); o.updateMatrix(); walls.setMatrixAt(k,o.matrix);
@@ -1095,7 +1219,7 @@ function makeStreet(){
       }
       root.add(walls); root.add(roofs);
       if(BG.includes("b")&&ri<3){
-        const m=Math.round(n*.35), tc=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(.42,0),mat(fade(ri===0?0x6E9A4E:0x7FA35E,f*.8)),m);
+        const m=Math.round(n*.35), tc=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(.42,0),bmat(fade(ri===0?0x6E9A4E:0x7FA35E,f*.8)),m);
         for(let k=0;k<m;k++){ const a=start+span*(k+.5)/m+.03, r=r0-.5+((k*17)%3)*.3, s2=.8+((k*11)%4)*.15;
           o.position.set(r*Math.sin(a),h0+.4+((k*5)%3)*.3,CZ-r*Math.cos(a)); o.rotation.set(0,k,0); o.scale.set(s2,s2*1.1,s2); o.updateMatrix(); tc.setMatrixAt(k,o.matrix); }
         root.add(tc);
@@ -1116,6 +1240,12 @@ function makeStreet(){
     // 行道樹（低多邊形）
     const trees=[]; ave.forEach((c,i)=>{ if(i<ave.length-1){ const g=(TS[i][1]+TS[i+1][0])/2; trees.push([g-.06,RIN+.9],[g+.06,RIN+1.7]); } });
     trees.push([-TH+.05,RIN+.8],[TH-.05,RIN+.8]);
+    /* 避開四條道路：樹冠與道路（含街區名牌）重疊時，往道路外側移開 */
+    const aveHalf=TS.map(([a,b])=>Math.min(1.5,(b-a)*RR*.62)/2), r0=RR-.86, r1=RR-.86-3.4;
+    trees.forEach(tr=>{ for(let tries=0;tries<40;tries++){ const [a,r]=tr; let hit=false;
+      ave.forEach((c,i)=>{ if(r<r1-.5||r>r0+.5) return; const lat=r*Math.sin(a-c); if(Math.abs(lat)<aveHalf[i]+.95){ hit=true; tr[0]+=(lat>=0?1:-1)*.02; } });
+      if(!hit) break; } });
+    for(let k=trees.length-1;k>=0;k--) if(Math.abs(trees[k][0])>TH-.08) trees.splice(k,1);   /* 被推出街道範圍的樹就不種 */
     const trunk=new THREE.InstancedMesh(new THREE.CylinderGeometry(.04,.06,.55,6),mat(0x7A5236),trees.length);
     const crown=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(.34,0),mat(0x6E9A4E),trees.length);
     trees.forEach(([a,r],i)=>{ const x=r*Math.sin(a), z=CZ-r*Math.cos(a), s=.7+((i*31)%5)*.06;
@@ -1123,6 +1253,29 @@ function makeStreet(){
       o.position.set(x,.75*s,z); o.scale.set(s,s*1.15,s); o.updateMatrix(); crown.setMatrixAt(i,o.matrix); });
     root.add(trunk); root.add(crown);
   })();
+  /* 街區名牌與街屋編號：永遠正面朝向讀者、固定大小，全景帶裡也看得清楚 */
+  function tagTex(text,bg,fg,border,font,padX){
+    const c=document.createElement("canvas"), x=c.getContext("2d"), f=font||"700 44px 'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif";
+    x.font=f; const tw=x.measureText(text).width, px=padX||22; c.width=Math.ceil(tw+px*2); c.height=72;
+    x.font=f; x.fillStyle=bg; const r=14;
+    x.beginPath(); x.moveTo(r,2); x.arcTo(c.width-2,2,c.width-2,c.height-2,r); x.arcTo(c.width-2,c.height-2,2,c.height-2,r); x.arcTo(2,c.height-2,2,2,r); x.arcTo(2,2,c.width-2,2,r); x.closePath(); x.fill();
+    if(border){x.strokeStyle=border; x.lineWidth=3; x.stroke();}
+    x.fillStyle=fg; x.textAlign="center"; x.textBaseline="middle"; x.fillText(text,c.width/2,c.height/2+2);
+    const t=new THREE.CanvasTexture(c); t.anisotropy=4; return {t,ar:c.width/c.height};
+  }
+  function sprite(tex,ar,h){ const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false,sizeAttenuation:false})); s.scale.set(h*ar,h,1); s.renderOrder=5; return s; }
+  // 街區名牌
+  const DNAME={intro:"序章 Intro",people:"People",model:"Model",ai:"AI"}, DBG={intro:"#C89B4A",people:"#B5523B",model:"#C24F4B",ai:"#2B6872"};
+  DIST.forEach(([k,a,b],i)=>{ const n=b-a+1, {t,ar}=tagTex(`${DNAME[k]}・${n} 篇`,DBG[k],"#FFFBF2",null,null,26), s=sprite(t,ar,.05);
+    const th=(TS[i][0]+TS[i][1])/2, r=RR-2.6; s.position.set(r*Math.sin(th),.5,CZ-r*Math.cos(th)); root.add(s); });
+  // 街屋編號
+  const numTags={};
+  function numTex(id,lit){ const P=PLQ[byId(id).ch]; return tagTex(String(id).padStart(2,"0"),P.bg,P.num,P.ring,"600 40px 'Cactus Classical Serif','Noto Serif TC',serif",14); }
+  for(let id=1;id<=22;id++){ const {t,ar}=numTex(id,false), s=sprite(t,ar,.032), sl=slot[id], top=HH(id)+(["intro","model"].includes(byId(id).ch)?.95:.65);
+    s.position.set(sl.x,top,sl.z); root.add(s); numTags[id]={s,lit:false}; }
+  function updateTags(){ for(let id=1;id<=22;id++){ numTags[id].s.visible=!houses[id]; } }
+  // 背景街區跟著閱讀進度長出來
+  function updateBg(){ const p=S.built.length/22, op=.05+.95*Math.pow(p,1.4); /* 前幾篇幾乎只看到主街，讀到一半後背景明顯浮現 */ bgMats.forEach(m=>{m.transparent=op<.99; m.opacity=op; m.depthWrite=op>=.99; m.needsUpdate=true;}); }
   const anims=[];
   function place(id,animate){
     if(houses[id]) return;
@@ -1137,9 +1290,11 @@ function makeStreet(){
     Object.keys(houses).forEach(id=>{id=+id;if(!S.built.includes(id)){root.remove(houses[id]);delete houses[id];ghosts[id].visible=true;
       for(let i=wins.length-1;i>=0;i--)if(wins[i].id===id)wins.splice(i,1);}});
     S.built.forEach(id=>place(id,false));
-    setNight(S.built.length===22,false); rewards();
+    setNight(S.built.length===22,false); rewards(); updateTags(); updateBg();
   }
-  function drop(i){ const id=S.built[i]; place(id,true); focus(id); }
+  function drop(i){ const id=S.built[i]; place(id,true); focus(id); updateTags(); }
+  function preview(on){ if(on){ for(let id=1;id<=22;id++) place(id,false); updateTags(); } else sync(); }
+  function lookCh(k){ if(!k){aim=0;auto=true;return;} const i=DIST.findIndex(d=>d[0]===k); aim=(TS[i][0]+TS[i][1])/2; auto=true; }
   function focus(id){aim=slot[id].th;auto=true;}
   function setNight(on){
     night=on; stage.classList.toggle("night",on);
@@ -1255,7 +1410,11 @@ function makeStreet(){
   }
   requestAnimationFrame(loop);
   matchMedia("(prefers-color-scheme:dark)").addEventListener("change",()=>{Object.keys(houses).forEach(id=>{root.remove(houses[id]);delete houses[id];});wins.length=0;sync();});
-  return {sync,drop,fireworks,prep};
+  /* 古典明體載入完成後，重畫匾額上的篇號 */
+  if(document.fonts&&document.fonts.load) document.fonts.load("700 74px 'Cactus Classical Serif'").then(f=>{ if(!f.length) return;
+    Object.keys(plqCache).forEach(k=>{plqCache[k].t.dispose();delete plqCache[k];});
+    Object.keys(houses).forEach(id=>{root.remove(houses[id]);delete houses[id];}); wins.length=0; sync(); }).catch(()=>{});
+  return {sync,drop,fireworks,prep,preview,lookCh};
 }
 /* 功能降級：3D 老街建立失敗（函式庫載入失敗、裝置不支援 3D），問卷、路線、閱讀、撕日曆照常運作 */
 function no3D(){
@@ -1263,7 +1422,7 @@ function no3D(){
   const m=document.createElement("p"); m.className="no3dmsg";
   m.textContent="這台裝置無法顯示 3D 老街，仍可正常閱讀與撕日曆。點亮的進度會照常記錄，換到支援的裝置就能看到整條街。";
   st.appendChild(m);
-  return {sync(){},drop(){},prep(){},fireworks(){$("#stage").classList.add("night");}};
+  return {sync(){},drop(){},prep(){},preview(){},lookCh(){},fireworks(){$("#stage").classList.add("night");}};
 }
 const T=(()=>{
   try{
