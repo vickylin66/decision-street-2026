@@ -1,4 +1,4 @@
-# 決策智慧老街 Decision Street 2026
+# 《決策之道，老街有燈》The Way of Decision (Decision Street 2026)
 
 **讀一篇，撕一張日曆，點亮一間街屋。**
 
